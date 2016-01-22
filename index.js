@@ -19,11 +19,10 @@ router.prototype.bind = function(map) {
 router.prototype.navigate = function() {
 	this.url = window.location.hash.substr(1,window.location.hash.length);
 	for (var key in this.map){
-		console.log(key);
 		var re = new RegExp(key);
 		if(re.test(this.url)){
-			console.log("found");
 			this.map[key]();
+			break;
 		}
 	}
 };
@@ -33,7 +32,15 @@ router.prototype.run = function() {
 };
 
 
+function home(){
+	console.log("i am home");
+};
+
+function index(){
+	console.log("i am index");
+};
+
 
 var r = new router();
-r.bind({"^/home$":function(){alert("123");}});
+r.bind({"^/home$":home,"^/":index});
 r.run();
