@@ -21,7 +21,7 @@ router.prototype.navigate = function() {
 	for (var key in this.map){
 		var re = new RegExp(key);
 		if(re.test(this.url)){
-			this.map[key]();
+			this.map[key](this);
 			break;
 		}
 	}
@@ -31,16 +31,32 @@ router.prototype.run = function() {
 	this.navigate();
 };
 
-
-function home(){
-	console.log("i am home");
+router.prototype.xhr = function(url,data,clb) {
+	var xhttp = new XMLHttpRequest();
+	xhttp.open("POST",url,true);
+	xhttp.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
+	xhttp.send(data);
+	xhttp.onreadystatechange = function() {
+    if (xhttp.readyState == 4 && xhttp.status == 200) {
+      clb(xhttp.responseText);
+    }
+  };
 };
 
-function index(){
+function data(d){
+	console.log(d);
+}
+
+function home(instance){
+	instance.xhr("/","",data);
+};
+
+function index(instance){
 	console.log("i am index");
 };
 
 
 var r = new router();
-r.bind({"^/home$":home,"^/":index});
+r.bind({"^/home$":home,
+	"^/":index});
 r.run();
